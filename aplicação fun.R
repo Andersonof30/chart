@@ -1,3 +1,43 @@
+#função quantil
+qUL = function (p, mi){
+  a = 1/mi - 1
+  
+  n = pracma::lambertWn ( exp(-(1 + a))*(p-1)*(1 + a)) + 1 + a
+  
+  D = pracma::lambertWn ( exp(-(1 + a))*(p-1)*(1 + a)) + 1
+  
+  nd = n/D
+  return(nd)
+}
+
+#estimador não viesado 
+ul.mean.mlet = function(x){
+  tx = function(x){
+    return(sum(x/(1 - x)))
+  }
+  
+  theta = 1/(2*tx(x))* (length(x) - tx(x) + sqrt(tx(x)^2 + 6*length(x)*tx(x) + length(x)^2))
+  
+  t_t = theta - (theta^5 + 7*theta^4 + 12*theta^3 + 8*theta^2 + 2*theta)/(((theta^2 + 4*theta + 2)^2)*length(x))
+  return(1/(1+t_t))
+}
+
+quhn = function(p,t){
+  ct = qnorm(.75)
+  s = t/(ct*(1 - t))
+  num = s*qnorm((p+1)/2)
+  dem = 1 + s*qnorm((p+1)/2)
+  r = num/dem
+  return(r)
+}
+
+med.c = function(x){
+  s = sqrt(mean((x/(1 - x))^2))
+  ct = qnorm(.75)
+  t = s*ct/(1 + s*ct) 
+  return(t)
+}
+
 require(ggplot2)
 
 x = runif(100)
