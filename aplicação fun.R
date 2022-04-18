@@ -22,6 +22,13 @@ ul.mean.mlet = function(x){
   return(1/(1+t_t))
 }
 
+pUL = function(x, mi){
+  a = 1/mi - 1
+  y =  1-(1- (a*x)/((a + 1)*(x - 1)))*exp(-a*x/(1-x))
+  return(y)
+  
+}
+
 quhn = function(p,t){
   ct = qnorm(.75)
   s = t/(ct*(1 - t))
@@ -38,12 +45,19 @@ med.c = function(x){
   return(t)
 }
 
+puhn = function(x,t){
+  ct = qnorm(.75)
+  s = t/(ct*(1 - t))
+  r = 2*pnorm(x/(s*(1 -x))) - 1
+  return(r)
+}
+
 require(ggplot2)
 
 x = runif(100)
 plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
   require(ggplot2)
-  n1 = length(x)*.7 
+  n1 = length(x)*fase1
   dados.f1 = data.frame(x[1:n1]); colnames(dados.f1) = 'val'
   dados = data.frame(x);colnames(dados) = 'val'
   sq = 1:length(x)
@@ -62,6 +76,7 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       theme_classic() +
       labs(x = 'amostra', y = 'valores', title = 'UHN')
     plot(p_uh)
+    vp_uh = ks.test(dados.f1$val, puhn, md_uh)$p.value
     
     bt_ap = Rfast::beta.mle(dados.f1$val)$param['alpha'];bt_bt = Rfast::beta.mle(dados.f1$val)$param['beta']
     md_bt = bt_ap/(bt_ap + bt_bt)
@@ -77,6 +92,7 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       theme_classic() +
       labs(x = 'amostra', y = 'valores', title = 'beta')
     plot(p_bt)
+    vp_bt = ks.test(dados.f1$val, pbeta, bt_ap, bt_bt)$p.value
     
     km_sp = Rfast2::kumar.mle(dados.f1$val)$param['shape'];km_sc = Rfast2::kumar.mle(dados.f1$val)$param['scale']
     md_km = (km_sc*gamma(1 + 1/km_sp)*gamma(km_sc))/(gamma(1 + 1/km_sp + km_sc))
@@ -89,10 +105,11 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       geom_line(aes(x = sq, y = qi_km), color = 'red') +
       geom_line(aes(x = sq, y = md_km), color = 'blue') +
       geom_line(aes(x = sq,y = qs_km), color = 'red') +
-      geom_vline(xintercept = n1, color = 'black', linetype = 2, size = 1)+
+      #geom_vline(xintercept = n1, color = 'black', linetype = 2, size = 1)+
       theme_classic() +
       labs(x = 'amostra', y = 'valores', title = 'kumar')
     plot(p_km)
+    vp_km = ks.test(dados.f1$val, VGAM::pkumar, km_sp, km_sc)$p.value
     
     md_ul = ul.mean.mlet(dados.f1$val)
     qi_ul = qUL(alpha/2, md_ul); qs_ul = qUL(1 - alpha/2, md_ul)
@@ -106,11 +123,25 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       theme_classic() +
       labs(x = 'amostra', y = 'valores', title = 'UL')
     plot(p_ul)
-  
+    vp_ul = ks.test(dados.f1$val, pUL, md_ul)$p.value
+    dt_pv = data.frame(round(c(vp_uh,vp_bt, vp_km, vp_ul), 4), 
+                       c('UHN', 'beta', 'kumar', 'UL'),
+                       c('p_uh', 'p_bt', 'p_km', 'p_ul'),
+                       row.names = c('', ' ', '  ', '    '))
+    colnames(dt_pv) = c('p-valor', 'distribuição', 'plot')
+    dt_pv = dt_pv[order(dt_pv$`p-valor`, decreasing = F),]
+    print(dt_pv[, 1:2])
+    #lapply(dt_pv$plot, get)
   }
   else if (type == 'count'){
   }
 }
+
+
+# Tentei utilizar a função get para plotar na ordem dos p-valores, não
+# deu certo mas farei outras tentativas 
+
+
 
 plot.control(x, type = 'unit')
 
