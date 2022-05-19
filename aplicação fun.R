@@ -1,4 +1,4 @@
-#funÁ„o quantil
+#fun√ß√£o quantil
 qUL = function (p, mi){
   a = 1/mi - 1
   
@@ -10,7 +10,7 @@ qUL = function (p, mi){
   return(nd)
 }
 
-#estimador n„o viesado 
+#estimador n√£o viesado 
 ul.mean.mlet = function(x){
   tx = function(x){
     return(sum(x/(1 - x)))
@@ -54,8 +54,9 @@ puhn = function(x,t){
 
 require(ggplot2)
 
-x = runif(100)
-plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
+
+plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
+                        xlab = 'a', ylab = 'b', tit = NULL, size = 10, ...){
   require(ggplot2)
   n1 = length(x)*fase1
   dados.f1 = data.frame(x[1:n1]); colnames(dados.f1) = 'val'
@@ -73,8 +74,8 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       geom_line(aes(x = sq, y = qi_uh), color = 'red') +
       geom_line(aes(x = sq, y = md_uh), color = 'blue') +
       geom_line(aes(x = sq,y = qs_uh), color = 'red') +
-      theme_classic() +
-      labs(x = 'amostra', y = 'valores', title = 'UHN')
+      theme_classic(base_size = size) +
+      labs(x = xlab, y = ylab, subtitle = 'UHN', title = tit)
     plot(p_uh)
     vp_uh = ks.test(dados.f1$val, puhn, md_uh)$p.value
     
@@ -89,8 +90,8 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       geom_line(aes(x = sq, y = qi_bt), color = 'red') +
       geom_line(aes(x = sq, y = md_bt), color = 'blue') +
       geom_line(aes(x = sq,y = qs_bt), color = 'red') +
-      theme_classic() +
-      labs(x = 'amostra', y = 'valores', title = 'beta')
+      theme_classic(base_size = size) +
+      labs(x = xlab, y = ylab, subtitle ='beta', title = tit)
     plot(p_bt)
     vp_bt = ks.test(dados.f1$val, pbeta, bt_ap, bt_bt)$p.value
     
@@ -106,8 +107,8 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       geom_line(aes(x = sq, y = md_km), color = 'blue') +
       geom_line(aes(x = sq,y = qs_km), color = 'red') +
       #geom_vline(xintercept = n1, color = 'black', linetype = 2, size = 1)+
-      theme_classic() +
-      labs(x = 'amostra', y = 'valores', title = 'kumar')
+      theme_classic(base_size = size) +
+      labs(x = xlab, y = ylab, subtitle = 'kumar', title = tit)
     plot(p_km)
     vp_km = ks.test(dados.f1$val, VGAM::pkumar, km_sp, km_sc)$p.value
     
@@ -120,15 +121,15 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
       geom_line(aes(x = sq, y = qi_ul), color = 'red') +
       geom_line(aes(x = sq, y = md_ul), color = 'blue') +
       geom_line(aes(x = sq,y = qs_ul), color = 'red') +
-      theme_classic() +
-      labs(x = 'amostra', y = 'valores', title = 'UL')
+      theme_classic(base_size = size) +
+      labs(x = xlab, y = ylab, subtitle = 'UL', title = tit)
     plot(p_ul)
     vp_ul = ks.test(dados.f1$val, pUL, md_ul)$p.value
     dt_pv = data.frame(round(c(vp_uh,vp_bt, vp_km, vp_ul), 4), 
                        c('UHN', 'beta', 'kumar', 'UL'),
                        c('p_uh', 'p_bt', 'p_km', 'p_ul'),
                        row.names = c('', ' ', '  ', '    '))
-    colnames(dt_pv) = c('p-valor', 'distribuiÁ„o', 'plot')
+    colnames(dt_pv) = c('p-valor', 'distribui√ß√£o', 'plot')
     dt_pv = dt_pv[order(dt_pv$`p-valor`, decreasing = F),]
     print(dt_pv[, 1:2])
     #lapply(dt_pv$plot, get)
@@ -138,10 +139,10 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1, ...){
 }
 
 
-# Tentei utilizar a funÁ„o get para plotar na ordem dos p-valores, n„o
+# Tentei utilizar a fun√ß√£o get para plotar na ordem dos p-valores, n√£o
 # deu certo mas farei outras tentativas 
 
 
-
-plot.control(x, type = 'unit')
+x = quhn(runif(30), .5)
+plot.control(x, type = 'unit', xlab = 'Amostra', ylab = 'Taxa (%)', tit = 'Titulo aqui', size =  20)
 
