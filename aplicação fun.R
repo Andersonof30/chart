@@ -125,11 +125,11 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
       labs(x = xlab, y = ylab, subtitle = 'UL', title = tit)
     plot(p_ul)
     vp_ul = ks.test(dados.f1$val, pUL, md_ul)$p.value
-    dt_pv = data.frame(round(c(vp_uh,vp_bt, vp_km, vp_ul), 4), 
-                       c('UHN', 'beta', 'kumar', 'UL'),
+    dt_pv = data.frame(c('UHN', 'beta', 'kumar', 'UL'),
+                       round(c(vp_uh,vp_bt, vp_km, vp_ul), 4), 
                        c('p_uh', 'p_bt', 'p_km', 'p_ul'),
                        row.names = c('', ' ', '  ', '    '))
-    colnames(dt_pv) = c('p-valor', 'distribuição', 'plot')
+    colnames(dt_pv) = c('distribuição','p-valor', 'plot')
     dt_pv = dt_pv[order(dt_pv$`p-valor`, decreasing = F),]
     print(dt_pv[, 1:2])
     #lapply(dt_pv$plot, get)
