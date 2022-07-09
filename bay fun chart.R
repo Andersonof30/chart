@@ -1,7 +1,7 @@
 source('function den.R')
 
 
-plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
+plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
                         xlab = 'a', ylab = 'b', tit = NULL, size = 10, 
                         L, iter = 10, ...){
   
@@ -34,14 +34,12 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
   if(type == 'unit'){
     ########### estimacao
     options(warn = -1) 
-    print('1')
     
     fit_ul <- stan(file = 'ASN UL.stan',
                    data = list(Y=dados.f1$val,N=length(dados.f1$val)),
                    iter = iter,
                    chains = 1)
     fit_ul = summary(fit_ul)
-    print('2')
     
     fit_km <- stan(file = 'ASN kuma.stan',
                    data = list(Y=dados.f1$val,N=length(dados.f1$val)),
@@ -200,38 +198,11 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
     print(dt_pv[, 1:2])
     print(md_ul)
   }
-  else if (type == 'count'){
+  
+  (type == 'count'){
     
 
     ##########estimacao
-
-
-    Bell.Chart.TOTAL = function(y = dados$val, dados.f1 = dados.f1$val,
-                                n = n, L = L){
-      package6 = "LambertW"
-      if(!require(package6, character.only = T)){
-        install.packages(package6, dependencies = T)
-      }
-      require(LambertW)
-      mu_bl = mean(dados.f1)/n
-      UCL_bl = n*mu_bl+L*sqrt((n*mu_bl*(1+W(mu_bl))))
-      CL_bl = n*mu_bl
-      LCL_bl = n*mu_bl-L*sqrt((n*mu_bl*(1+W(mu_bl))))
-      #UCL_bl = rep(UCL_bl, length(y))
-      #CL_bl = rep(CL_bl, length(y))
-      #LCL_bl = rep(LCL_bl, length(y))
-      p_bl = ggplot(data = dados) +
-        geom_point(aes(x = sq, y = val), color = 
-                     ifelse(dados$val < LCL_bl | dados$val > UCL_bl, 'green','black')) +
-        geom_line(aes(x = sq, y = val)) +
-        geom_line(aes(x = sq, y = LCL_bl), color = 'red') +
-        geom_line(aes(x = sq, y = CL_bl), color = 'blue') +
-        geom_line(aes(x = sq,y = UCL_bl), color = 'red') +
-        geom_vline(xintercept =  length(dados.f1) + 0.5, lty = 2, col = 'black') +
-        theme_classic(base_size = size) +
-        labs(x = xlab, y = ylab, subtitle = 'Bell', title = tit)
-      plot(p_bl)
-    }
     
     #psh
     PSu.c.chart = function(dados, samples1, L){
@@ -404,44 +375,6 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
     PSh.c.chart(samples1 = dados.f1$val, dados = dados, L = L)
     
     PSu.c.chart(samples1 = dados.f1$val, dados = dados, L = L)
-    
-    Bell.Chart.TOTAL(y = dados$val,dados.f1 = dados.f1$val,n,L = L)
   }
 }
-
-
-x = c(16,18,12,15,24,21,28,20,25,19,18,21,16,22,19,12,14,9,16,21,27,27,
-      34,31,19,29,17,35,20,18,12,34,13,25,23,24,20,27,16,28)
-x = rpois(100, 50)
-plot.control(x, type = 'count', fase1 = 0.8, xlab = 'Amostra', ylab = '', 
-             tit = 'Titulo aqui', size =  20, L = 1.5, 
-             inter = 100)
-
-x = VGAM::rkumar(200, 2, 3)
-x = rbeta(100, 1 ,3)
-x = qUL(runif(50), .3)
-#x = runif(50)
-plot.control(x, type = 'unit', fase1 = .8, xlab = 'Amostra', ylab = 'Taxa (%)', 
-             tit = 'Titulo aqui', size =  20, iter = 100)
-
-
-
-
-s.min = read.csv('serie minima atualizada (n 200).csv', sep = ' ')
-s.max = read.csv('serie maximo atualizada (n 200).csv', sep = ' ')
-
-tm1 = Sys.time()
-plot.control(s.min$minima, type = 'unit', fase1 = .8, xlab = '', ylab = 'Umidade Relativa do Ar', 
-             tit = ' ', size =  20, iter = 1000)
-tm2 = Sys.time()
-
-
-plot.control(s.max$maxima, type = 'unit', fase1 = .8, xlab = '', ylab = 'Umidade Relativa do Ar', 
-             tit = ' ', size =  20, iter = 1000)
-
-
-read.csv("https://raw.githubusercontent.com/Andersonof30/chart/main/serie%20minima%20atualizada%20(n%20200).csv", sep = " ")
-
-
-
 
