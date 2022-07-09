@@ -1,6 +1,5 @@
 source('function den.R')
 
-
 plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
                         xlab = 'a', ylab = 'b', tit = NULL, size = 10, 
                         L, iter = 10, ...){
@@ -75,7 +74,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
                    ifelse(dados$val < min(qi_uh) | dados$val > max(qs_uh), 
                           'green',
                           ifelse(dados$val < max(qi_uh) | dados$val > min(qs_uh), 
-                                'blue', 'black'  ))) +
+                                 'blue', 'black'  ))) +
       geom_line(aes(x = sq, y = val)) +
       geom_line(aes(x = sq, y = median(qi_uh)), color = 'red') +
       geom_ribbon(aes(x = sq, ymin= min(qi_uh), ymax= max(qi_uh)), alpha=0.1, fill = "red", 
@@ -83,7 +82,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
       geom_line(aes(x = sq, y = md_uh), color = 'blue') +
       geom_line(aes(x = sq,y = median(qs_uh)), color = 'red') +
       geom_ribbon(aes(x = sq, ymin = min(qs_uh), ymax= max(qs_uh)), alpha=0.1, fill = "red", 
-                    color = "red", linetype = "dotted") +
+                  color = "red", linetype = "dotted") +
       geom_vline(xintercept =  length(dados.f1$val) + 0.5, lty = 2, col = 'black') +
       theme_classic(base_size = size) +
       labs(x = xlab, y = ylab, subtitle = 'unit-half-normal', title = tit)
@@ -199,18 +198,18 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     print(md_ul)
   }
   
-  (type == 'count'){
+  else if (type == 'count'){
     
-
+    
     ##########estimacao
     
     #psh
     PSu.c.chart = function(dados, samples1, L){
-      fith <- stan(file = 'ASN SH.stan',
+      fitu <- stan(file = 'ASN Sujatha.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
-      fith = summary(fith)
+      fitu = summary(fitu)
       
       h.mu = function(mu, log=F){
         p1 = 3*sqrt(3)*sqrt(7*mu^4+28*mu^3+171*mu^2+32*mu+5)*mu
@@ -220,7 +219,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
         if (log) theta else exp(theta)
       }
       
-      y.BAR = fith$summary[1, c('50%', '2.5%', '97.5%')]
+      y.BAR = fitu$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
       mu = y.BAR
       a = h.mu(mu)
@@ -230,9 +229,9 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
       LCL_su = mu- L*desvio
       p_su = ggplot(data = dados) +
         geom_point(aes(x = sq, y = val), color = 
-        ifelse(dados$val < min(LCL_su) | dados$val > max(UCL_su), 'green',
-               ifelse(dados$val < max(LCL_su) | dados$val > min(UCL_su), 
-                      'blue', 'black'  ))) +
+                     ifelse(dados$val < min(LCL_su) | dados$val > max(UCL_su), 'green',
+                            ifelse(dados$val < max(LCL_su) | dados$val > min(UCL_su), 
+                                   'blue', 'black'  ))) +
         geom_line(aes(x = sq, y = val)) +
         
         geom_line(aes(x = sq, y = median(LCL_su)), color = 'red') +
@@ -291,7 +290,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     
     #psk
     PSh.c.chart = function(dados, samples1, L){
-      fitk <- stan(file = 'ASN PSK.stan',
+      fitk <- stan(file = 'ASN Shanker.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
@@ -307,9 +306,9 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
       CL_sh = n*mu
       LCL_sh = n*mu-L*desvio
       p_sh = ggplot(data = dados) +
-      geom_point(aes(x = sq, y = val), color =
-           ifelse(dados$val < min(LCL_sh) | dados$val > max(UCL_sh), 'green',
-          ifelse(dados$val < max(LCL_sh) | dados$val > min(UCL_sh), 
+        geom_point(aes(x = sq, y = val), color =
+                     ifelse(dados$val < min(LCL_sh) | dados$val > max(UCL_sh), 'green',
+                            ifelse(dados$val < max(LCL_sh) | dados$val > min(UCL_sh), 
                                    'blue', 'black'  ))) +
         
         geom_line(aes(x = sq, y = val)) +
@@ -337,7 +336,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
                     chains = 1)
       
       fitp1 = summary(fitp1)
-
+      
       y.BAR = fitp1$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
       mu = y.BAR
@@ -347,9 +346,9 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
       LCL_pos = mu - L*desvio
       p_pos = ggplot(data = dados) +
         geom_point(aes(x = sq, y = val), color = 
-             ifelse(dados$val < min(LCL_pos) | dados$val > max(UCL_pos), 'green',
-                ifelse(dados$val < max(LCL_pos) | dados$val > min(UCL_pos), 
-                           'blue', 'black'  ))) +
+                     ifelse(dados$val < min(LCL_pos) | dados$val > max(UCL_pos), 'green',
+                            ifelse(dados$val < max(LCL_pos) | dados$val > min(UCL_pos), 
+                                   'blue', 'black'  ))) +
         
         geom_line(aes(x = sq, y = val)) +
         
@@ -377,4 +376,3 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     PSu.c.chart(samples1 = dados.f1$val, dados = dados, L = L)
   }
 }
-
