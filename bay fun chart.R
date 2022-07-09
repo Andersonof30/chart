@@ -409,36 +409,3 @@ plot.control = function(x, type = 'nome', fase1 = 0.7,alpha = .1,
   }
 }
 
-
-x = c(16,18,12,15,24,21,28,20,25,19,18,21,16,22,19,12,14,9,16,21,27,27,
-      34,31,19,29,17,35,20,18,12,34,13,25,23,24,20,27,16,28)
-x = rpois(50, 50)
-plot.control(x, type = 'count', fase1 = 0.8, xlab = 'Amostra', ylab = '', 
-             tit = 'Titulo aqui', size =  20,n = 40, L = 1.5)
-
-x = VGAM::rkumar(200, 2, 3)
-x = rbeta(100, 1 ,3)
-x = qUL(runif(50), .3)
-#x = runif(50)
-plot.control(x, type = 'unit', fase1 = .8, xlab = 'Amostra', ylab = 'Taxa (%)', 
-             tit = 'Titulo aqui', size =  20, iter = 100)
-
-
-
-
-s.min = read.csv('serie minima atualizada (n 200).csv', sep = ' ')
-s.max = read.csv('serie maximo atualizada (n 200).csv', sep = ' ')
-
-tm1 = Sys.time()
-plot.control(s.min$minima, type = 'unit', fase1 = .8, xlab = '', ylab = 'Umidade Relativa do Ar', 
-             tit = ' ', size =  20, iter = 1000)
-tm2 = Sys.time()
-
-
-plot.control(s.max$maxima, type = 'unit', fase1 = .8, xlab = '', ylab = 'Umidade Relativa do Ar', 
-             tit = ' ', size =  20, iter = 1000)
-
-
-
-
-
