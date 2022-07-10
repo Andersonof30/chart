@@ -211,21 +211,14 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
                    chains = 1)
       fitu = summary(fitu)
       
-      h.mu = function(mu, log=F){
-        p1 = 3*sqrt(3)*sqrt(7*mu^4+28*mu^3+171*mu^2+32*mu+5)*mu
-        p2 = 8*mu^3+66*mu^2+6*mu+1
-        p = (p1+p2)^(1/3)
-        theta = log(p/mu-((mu-1)*(5*mu+1))/(mu*p)-(mu-1)/mu)-log(3)
-        if (log) theta else exp(theta)
-      }
-      
-      mu = fitu$summary[1, c('50%', '2.5%', '97.5%')]
+      a = fitu$summary[1, c('50%', '2.5%', '97.5%')]
+      mu = (a^2 + 2*a + 6)/(a*(a^2 + a + 2))
       n = length(sq)
-      a = h.mu(mu)
       desvio = sqrt((a^5+4*a^4+14*a^3+28*a^2+24*a+12)/(a^2*(a^2+a+2)^2))
       UCL_su = mu + L*desvio
       CL_su =  mu
       LCL_su = mu- L*desvio
+      
       p_su = ggplot(data = dados) +
         geom_point(aes(x = sq, y = val), color = 
                      ifelse(dados$val < min(LCL_su) | dados$val > max(UCL_su), 'green',
