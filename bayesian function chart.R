@@ -34,19 +34,19 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     ########### estimacao
     options(warn = -1) 
     
-    fit_ul <- stan(file = 'ASN UL.stan',
+    fit_ul <- stan(file = 'ul.stan',
                    data = list(Y=dados.f1$val,N=length(dados.f1$val)),
                    iter = iter,
                    chains = 1)
     fit_ul = summary(fit_ul)
     
-    fit_km <- stan(file = 'ASN kuma.stan',
+    fit_km <- stan(file = 'kumar.stan',
                    data = list(Y=dados.f1$val,N=length(dados.f1$val)),
                    iter = iter,
                    chains = 1)
     fit_km = summary(fit_km)
     
-    fit_bt <- stan(file = 'ASN BETA.stan',
+    fit_bt <- stan(file = 'beta.stan',
                    data = list(Y=dados.f1$val,N=length(dados.f1$val)),
                    iter = iter,
                    chains = 1)
@@ -54,7 +54,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     
     
     
-    fit_uhn <- stan(file = 'ASN UHN.stan',
+    fit_uhn <- stan(file = 'uhn.stan',
                     data = list(Y=dados.f1$val,N=length(dados.f1$val)),
                     iter = iter,
                     chains = 1)
@@ -205,7 +205,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     
     #psh
     PSu.c.chart = function(dados, samples1, L){
-      fitu <- stan(file = 'ASN Sujatha.stan',
+      fitu <- stan(file = 'PSujatha.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
@@ -219,9 +219,8 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
         if (log) theta else exp(theta)
       }
       
-      y.BAR = fitu$summary[1, c('50%', '2.5%', '97.5%')]
+      mu = fitu$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
-      mu = y.BAR
       a = h.mu(mu)
       desvio = sqrt((a^5+4*a^4+14*a^3+28*a^2+24*a+12)/(a^2*(a^2+a+2)^2))
       UCL_su = mu + L*desvio
@@ -252,15 +251,14 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     #Pois L
     PL.c.chart = function(dados, samples1, L){
       
-      fitl <- stan(file = 'ASN PLindley.stan',
+      fitl <- stan(file = 'PLindley.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
       fitl = summary(fitl)
       
-      y.BAR = fitl$summary[1, c('50%', '2.5%', '97.5%')]
+      mu = fitl$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
-      mu = y.BAR
       a = (-1/(2*mu))*((mu-1)-sqrt(((mu-1)^2)+8*mu))
       desvio = sqrt((a^3+(4*a^2)+6*a+2)/((a^2)*((a+1)^2)))
       UCL_pl = mu + L*desvio
@@ -290,21 +288,20 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     
     #psk
     PSh.c.chart = function(dados, samples1, L){
-      fitk <- stan(file = 'ASN Shanker.stan',
+      fitk <- stan(file = 'PShanker.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
       fitk = summary(fitk)
       
-      y.BAR = fitk$summary[1, c('50%', '2.5%', '97.5%')]
+      mu = fitk$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
-      mu = y.BAR/n
       s.mu = (12*mu*sqrt(3*(4*mu^4+71*mu^2+8))+180*mu^2+8)^(1/3)
       a = (1/(3*mu))*(1+s.mu/2-2*(3*mu^2-1)/s.mu)
-      desvio = sqrt(n*((a^5+a^4+3*a^3+4*a^2+2*a+2)/(a^2*((a^2+1)^2))))
-      UCL_sh = n*mu+L*desvio
-      CL_sh = n*mu
-      LCL_sh = n*mu-L*desvio
+      desvio = sqrt(((a^5+a^4+3*a^3+4*a^2+2*a+2)/(a^2*((a^2+1)^2))))
+      UCL_sh = mu+L*desvio
+      CL_sh = mu
+      LCL_sh = mu-L*desvio
       p_sh = ggplot(data = dados) +
         geom_point(aes(x = sq, y = val), color =
                      ifelse(dados$val < min(LCL_sh) | dados$val > max(UCL_sh), 'green',
@@ -330,16 +327,15 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     #pois
     P.c.chart = function(dados, samples1, L){
       
-      fitp1 <- stan(file = 'ASN POIS.stan',
+      fitp1 <- stan(file = 'Pois.stan',
                     data = list(Y=samples1,N=length(samples1)),
                     iter = iter,
                     chains = 1)
       
       fitp1 = summary(fitp1)
       
-      y.BAR = fitp1$summary[1, c('50%', '2.5%', '97.5%')]
+      mu = fitp1$summary[1, c('50%', '2.5%', '97.5%')]
       n = length(sq)
-      mu = y.BAR
       desvio = sqrt(mu)
       UCL_pos = mu + L*desvio
       CL_pos = mu 
