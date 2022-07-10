@@ -252,7 +252,7 @@ plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
     #Pois L
     PL.c.chart = function(dados, samples1, L){
       
-      fitl <- stan(file = 'ASN PL2.stan',
+      fitl <- stan(file = 'ASN PLindley.stan',
                    data = list(Y=samples1,N=length(samples1)),
                    iter = iter,
                    chains = 1)
