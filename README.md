@@ -6,6 +6,6 @@ O repositório está organizado da seguinte maneira:
 
 - A pasta "stan" contém os arquivos stan necessários para fazer a estimação bayesiana; 
 
-- A pasta "Aplication" contém os arquivos R com as aplicações.
+- A pasta "aplication" contém os arquivos R com as aplicações.
 
-- A pasta "Data" contém os dados utilizados nas aplicações.
+- A pasta "data" contém os dados utilizados nas aplicações.
