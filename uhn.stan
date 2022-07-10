@@ -37,6 +37,7 @@ parameters {
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
+  t ~ normal(0.5,2.5);
 //LIKELIHOOD
   Y ~ ASN(t);
 }
