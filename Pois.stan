@@ -17,7 +17,7 @@ functions{
     real lprob;
     for (i in 1:num_elements(x)){
       
-      prob[i] = ((mu0^x[i])*exp(-1*mu0))/(factorial1(x[i] + 1)) ;    
+      prob[i] = ((mu0^x[i])*exp(-1*mu0))/(tgamma(x[i] + 1)) ;    
       }
     lprob = sum(log(prob));
     return lprob;
