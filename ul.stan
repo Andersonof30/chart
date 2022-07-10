@@ -37,6 +37,6 @@ parameters {
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
-
+  mi ~ normal(0.5,2.5);
   Y ~ ASN(mi);
 }

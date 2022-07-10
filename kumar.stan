@@ -38,6 +38,7 @@ parameters {
 // 'y' to be normally distributed with mean 'mu'
 // and standard deviation 'sigma'.
 model {
-
+  alp ~ normal(0.5,2.5);
+  bet ~ normal(0.5,2.5);
   Y ~ ASN(alp, bet);
 }
