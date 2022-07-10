@@ -1,8 +1,8 @@
-source('funcoes de apoio.R')
+source('support functions.R')
 
 plot.control = function(x, type = c('unit', 'count'), fase1 = 0.7,alpha = .1,
-                        xlab = 'a', ylab = 'b', tit = NULL, size = 10, 
-                        L, ...){
+                        xlab = 'a', ylab = 'b', tit = NULL, size = 1000, 
+                        L = 3, ...){
   
 # instalando pacotes 
 ###########################
